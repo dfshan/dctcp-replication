@@ -1,6 +1,20 @@
 #!/usr/bin/env python
 import random
 class pointcurve():
+''' Using a set of points to estimate the points between them
+The points are usually token from CDF
+
+^
+|
+|
+|                  *
+|            ?
+|       *
+|   *     
+|  
+---------------------------->
+'''
+
     def __init__(self, pointsfile):
         with open(pointsfile) as f:
             pp = f.readlines()
@@ -32,14 +46,24 @@ class pointcurve():
         l = self.theintvlof(y)
         xinterval = self.xx[l+1] - self.xx[l]
         yinterval = self.yy[l+1] - self.yy[l]
-        if xinterval == 0:
+        if xinterval == 0: # vertical line
             ret = self.xx[l]
-        elif yinterval == 0:
+        elif yinterval == 0: # horizontal line
             ret = random.random() * xinterval + self.xx[l]
         else:
             k = yinterval / xinterval
-            ret = ( y - self.yy[l] )/k + self.xx[l]
+            ret = (y - self.yy[l])/k + self.xx[l]
         return ret
+
+    def average(self):
+    ''' estimate the average x
+    Note that (xx, yy) is token from a cdf
+    Assume that the value (xx[i]+xx[i+1])/2 has the probability of (yy[i+1]-yy[i])
+    '''
+	sum = 0
+	for i in range(self.lenyy-1):
+	    sum += 0.5*(self.xx[i] + self.xx[i+1])*(self.yy[i+1]-self.yy[i])
+	return sum
 
 if __name__ == '__main__':
     a = pointcurve('datasize.cdf')
