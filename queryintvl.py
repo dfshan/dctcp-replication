@@ -4,14 +4,16 @@ import sys
 import random
 import pointcurve
 
+
 if len(sys.argv) <= 3:
     sys.stderr.write("%s: USAGE %s duration ip_file src_ip\n" % (sys.argv[0], sys.argv[0]))
     sys.exit()
 
-l = 7.1
-queryarr = lambda x: 1 - math.exp(-l*x)
-#queryintvl_r = lambda y: math.log(1-y)/(-l)
+# delete l = 7.1
+# delete queryarr = lambda x: 1 - math.exp(-l*x)
+# delete queryintvl_r = lambda y: math.log(1-y)/(-l)
 
+# this is a function, which converts y to x
 queryintvl_r = pointcurve.pointcurve('queryintvl.cdf').ytox
 
 need = float(sys.argv[1])

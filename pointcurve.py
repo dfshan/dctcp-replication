@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 import random
-class pointcurve():
-''' Using a set of points to estimate the points between them
-The points are usually token from CDF
+class pointcurve(object):
+    ''' Using a set of points to estimate the points between them
+    The points are usually token from CDF
 
-^
-|
-|
-|                  *
-|            ?
-|       *
-|   *     
-|  
----------------------------->
-'''
+    ^
+    |
+    |
+    |                  *
+    |            ?
+    |       *
+    |   *     
+    |  
+    ---------------------------->
+    '''
 
     def __init__(self, pointsfile):
         with open(pointsfile) as f:
@@ -28,8 +28,10 @@ The points are usually token from CDF
 
     def theintvlof(self, y):
         '''return the index of the first value in yy that yy <= y. \
-    for y <= min(yy), return the index of min(yy); \
-    for y >= max(yy), return the index of max(yy)'''
+        for y <= min(yy), return the index of min(yy); \
+        for y >= max(yy), return the index of max(yy)
+        '''
+
         for i in range(self.lenyy):
             if y > self.yy[i]:
                 continue
@@ -56,15 +58,35 @@ The points are usually token from CDF
         return ret
 
     def average(self):
-    ''' estimate the average x
-    Note that (xx, yy) is token from a cdf
-    Assume that the value (xx[i]+xx[i+1])/2 has the probability of (yy[i+1]-yy[i])
-    '''
+        ''' estimate the average x
+        Note that (xx, yy) is token from a cdf
+        Assume that the value (xx[i]+xx[i+1])/2 has the probability of (yy[i+1]-yy[i])
+        '''
 	sum = 0
 	for i in range(self.lenyy-1):
 	    sum += 0.5*(self.xx[i] + self.xx[i+1])*(self.yy[i+1]-self.yy[i])
 	return sum
+        
+    def gnum(self, qt):
+        ''' Generate random numbers based on CDF
+        We use ITM (inverse transform method) to generate random number based on CDF.
+
+        Args:
+            num: the quantity of random numbers to be generated
+
+        Returns:
+            a list, contains generated random number
+            Example:
+                [2.333, 3.222, 5.888, ... ]
+        '''
+        result = []
+        for i in range(qt):
+            rnum = 0
+            while rnum == 0:
+                rnum = self.ytox(random.random())
+            result.append(rnum)
+        return result
 
 if __name__ == '__main__':
-    a = pointcurve('datasize.cdf')
-    print(a.ytox(0.5))
+    a = pointcurve('queryintvl.cdf')
+    print a.gnum(10)
